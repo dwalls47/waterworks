@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcService.Protos";
+
+service RemoteMeter {
+	rpc GetMeterInfo (MeterLookupModel) returns (MeterModel);
+}
+
+message MeterLookupModel {
+	int32 meterId = 1;
+}
+
+message MeterModel {
+	int32 meterId = 1;
+	string meterNumber = 2;
+}

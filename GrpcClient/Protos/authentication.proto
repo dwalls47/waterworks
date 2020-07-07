@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcService.Protos";
+
+service Authentication {
+	rpc Login (LoginRequest) returns (LoginResponse) {};
+}
+
+message LoginRequest {
+	int32 userId = 1;
+	string username = 2;
+	string password = 3;
+}
+
+message LoginResponse {
+	string accessToken = 1;
+}
