@@ -4,6 +4,14 @@ A fictional water utility.
 
 Began with https://www.youtube.com/watch?v=Xh47x_C-aMM&feature=youtu.be
 
+## Code First
+
+### Create Migration
+```dotnet-ef migrations add M1 -o Data/Migrations```
+
+### Update Database
+```dotnet-ef database update```
+
 Ignore the GrpcWebService project for now. First trying to get things working with HTTP 2.0.
 
 Then looking at https://dev.to/techschoolguru/use-grpc-interceptor-for-authorization-with-jwt-1c5h for authentication to obtain JWT. I have begun this work, but have not completed it.

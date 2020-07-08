@@ -10,6 +10,9 @@ namespace GrpcService.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<Meter>().HasIndex(m => m.MeterNumber).IsUnique();
+            builder.Entity<User>().HasIndex(u => u.UserName).IsUnique();
+
             builder.Entity<Meter>().HasData( GetMeters() );
             builder.Entity<User>().HasData( GetUsers() );
         }
