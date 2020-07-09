@@ -8,6 +8,7 @@ using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,8 +35,18 @@ namespace GrpcService.Services
             #region JWT
             if (user != null)
             {
-                //  TODO: Verify HashedPassword: The password should probably be hashed at client before sent to server, if not hash it here and compare to stored hash
-                if (request.Password == user.HashedPassword)
+                //  https://stackoverflow.com/questions/2138429/hash-and-salt-passwords-in-c-sharp
+                //  SequentialEqual
+                string hashedPassword;
+                using (var algorithm = new Rfc2898DeriveBytes(
+                    Encoding.UTF8.GetBytes(request.Password),
+                    Convert.FromBase64String(user.Salt),
+                    user.Iterations,
+                    HashAlgorithmName.SHA256))
+                {
+                    hashedPassword = Convert.ToBase64String(algorithm.GetBytes(32));
+                }
+                if (hashedPassword == user.HashedPassword)
                 {
                     //  https://jasonwatmore.com/post/2019/10/11/aspnet-core-3-jwt-authentication-tutorial-with-example-api
                     //  Generate JWT with Claims

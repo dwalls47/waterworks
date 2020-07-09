@@ -18,7 +18,14 @@ namespace GrpcClient
                         var client = new Authentication.AuthenticationClient(channel);
                         var authorization = client.Login(credentials);
 
-                        Console.WriteLine(authorization.AccessToken);
+                        var jwt = authorization.AccessToken == null ? "null" : authorization.AccessToken;
+                        Console.WriteLine($"JWT: {jwt}");
+
+                        credentials = new LoginRequest { Username = "admin", Password = "admin1" };
+                        authorization = client.Login(credentials);
+
+                        jwt = authorization.AccessToken == null ? "null" : authorization.AccessToken;
+                        Console.WriteLine($"JWT: {jwt}");
 
                         break; 
                     }

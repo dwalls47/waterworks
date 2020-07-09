@@ -1,6 +1,9 @@
 ﻿using GrpcService.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace GrpcService.Data
 {
@@ -62,17 +65,41 @@ namespace GrpcService.Data
                 {
                     UserId = 1,
                     UserName = "admin",
-                    HashedPassword = "admin"
+                    Salt = Salt(),
+                    Iterations = 1
                 },
                 new User()
                 {
                     UserId = 2,
                     UserName = "user",
-                    HashedPassword = "user"
+                    Salt = Salt(),
+                    Iterations = 1
                 }
             };
 
+            users.ForEach(u => u.HashedPassword = Hash(u.UserName, u.Salt, u.Iterations));
+
             return users;
+        }
+
+        private static string Salt()
+        {
+            var salt = new byte[32];
+            var rng = new RNGCryptoServiceProvider();
+            rng.GetBytes(salt);
+            return Convert.ToBase64String(salt);
+        }
+
+        private static string Hash(string password, string salt, int iterations)
+        {
+            using (var algorithm = new Rfc2898DeriveBytes(
+                Encoding.UTF8.GetBytes(password),
+                Convert.FromBase64String(salt),
+                iterations,
+                HashAlgorithmName.SHA256))
+            {
+                return Convert.ToBase64String(algorithm.GetBytes(32));
+            }
         }
     }
 }
